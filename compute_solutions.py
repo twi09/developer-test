@@ -3,7 +3,8 @@ This script contains the function needed to compute the probability of sucess
 ''' 
 
 import numpy as np 
-
+import sqlite3
+import os 
 # Compute the probability from the total number of time meet bounty hunters 
 compute_probability = lambda nb_total_meet : sum(((9**(k-1))/ 10**(k)) for k in range(1,nb_total_meet+1)) if nb_total_meet!=0 else 0
 
@@ -135,3 +136,93 @@ def compute_proba(Return_path) :
         # Take path with minimum number of time meet bounty hunters 
         nb_min_meet = min(Return_path,key=lambda x:x[1][2])[1][2]
         return((1-compute_probability(nb_min_meet))*100)
+        
+  
+def load_graph_from_route(routes_table):
+    """
+    Function that transform the route_table into an adjacency matrix 
+    """
+    
+    
+    # List of planet names starts  
+    planets_start = [x[0] for x in routes_table] 
+    # List of planet names ends
+    planets_ends = [x[1] for x in routes_table] 
+    # Set of unique planets 
+    set_unique_planets = set(planets_start + planets_ends)
+    # Number of different planets 
+    nb_planet = len(set_unique_planets)
+    # Dico planet to index in the graph 
+    dico_planet_to_index = dict(zip(set_unique_planets,[i for i in range(nb_planet)]))
+    
+    # Init an adjacency matrix 
+    G = np.zeros((nb_planet,nb_planet)) + float("inf")
+    
+    # Each node can cyle on itself with a cost of 1 (refuel or wait)
+    np.fill_diagonal(G, 1)
+    
+    # Fill the matrix by visiting each edge
+    for edge in routes_table : 
+        start_node_index,end_node_index,cost = dico_planet_to_index[edge[0]],dico_planet_to_index[edge[1]], edge[2]
+        G[start_node_index,end_node_index] = cost
+    
+    return(G,dico_planet_to_index)
+
+      
+def give_me_the_odds_from_files(data_milenium,data_empire,routes_path) : 
+
+    """
+    Function that takes the json files and return the odds 
+    
+    Parameters
+    ------
+    data_milenium : milenium-falcon.json file
+    data_empire : empire.json file 
+    routes_path : path of the ROUTES .db file 
+    """
+    
+
+    # Connect to the database 
+    conn = sqlite3.connect(routes_path)
+    # Create a cursor object
+    c = conn.cursor()
+    # Execute a SQL query to retrieve the ROUTES table 
+    c.execute("SELECT * FROM ROUTES")
+    # Fetch the results
+    routes_table = c.fetchall()
+    # Close the cursor and connection
+    c.close()
+    conn.close()
+
+
+    # Define variables from .json files
+    autonomy_default = data_milenium["autonomy"]
+    countdown = data_empire["countdown"]
+    node_to_start = data_milenium["departure"]
+    node_to_end = data_milenium["arrival"]
+    # load as a dictionary day:planet
+    bounty_hunters = {data_empire["bounty_hunters"][i]["day"] : data_empire["bounty_hunters"][i]["planet"] for i in range(len(data_empire["bounty_hunters"])) }
+    
+    # Load the routes table as an adjacency matrix 
+    G,dico_planet_to_index = load_graph_from_route(routes_table)
+    
+    # Compute valid solutions 
+    Return_path = compute_paths(G,autonomy_default,countdown,node_to_start,node_to_end,bounty_hunters,dico_planet_to_index)
+    
+    return(compute_proba(Return_path))
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
