@@ -2,7 +2,7 @@
 
 ### Install requirements:
 ```
-pip install -r requirements.txt
+conda env create -f developer_test.yml
 ```
 ### Run the flask server: 
 ```
