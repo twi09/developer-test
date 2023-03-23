@@ -1,7 +1,5 @@
 # Developer Technical Test
 
-## How to run my code? 
-
 ### Install requirements:
 ```
 pip install -r requirements.txt
@@ -12,7 +10,7 @@ python3 app.py
 ```
 The path of millennium-falcon.json need to be set in the app.py file.
 
-## CLI interface:
+### CLI interface:
 ```
 python3 cli.py examples/example1/millennium-falcon.json examples/example1/empire.json
 ```
