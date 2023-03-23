@@ -1,5 +1,22 @@
 # Developer Technical Test
 
+## How to run my code? 
+
+### Install requirements:
+```
+pip install -r requirements.txt
+```
+### Run the flask server: 
+```
+python3 app.py
+```
+The path of millennium-falcon.json need to be set in the app.py file.
+
+## CLI interface:
+```
+python3 cli.py examples/example1/millennium-falcon.json examples/example1/empire.json
+```
+
 ## What are the odds?
 
 The Death Star - the Empire's ultimate weapon - is almost operational and is currently approaching the Endor planet. The countdown has started.
