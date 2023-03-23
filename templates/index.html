@@ -1,15 +1,17 @@
-<!doctype html>
 <html>
   <head>
     <title>Upload JSON file</title>
-    <title>Output</title>
   </head>
   <body>
-    <h1>Upload a JSON file</h1>
-    <form method="post" enctype="multipart/form-data">
-      <input type="file" name="file" accept=".json">
-      <button type="submit">Upload</button>
-    </form>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+      <h1 style="text-align:center;">Upload empire data</h1>
+      <div style="margin-bottom: 50px;">
+        <img src="./static/never-tell_me_the_odds.gif" alt="Star Wars GIF">
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".json">
+        <button type="submit">Upload</button>
+      </form>
+    </div>
   </body>
 </html>
-
